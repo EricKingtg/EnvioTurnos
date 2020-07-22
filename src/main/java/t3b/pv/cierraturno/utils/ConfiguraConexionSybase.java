@@ -24,7 +24,6 @@ public class ConfiguraConexionSybase {
         log.info("Obteniendo Conexion a BOT: " + ip );
 
         Conexion con = new Conexion();
-        //Formula para generar el pass automaticamente
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
