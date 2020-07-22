@@ -11,13 +11,15 @@ package t3b.pv.cierraturno.utils;
 import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.log4j.Logger;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import dnn.nominae.modulobdconexion.db.utils.Conexion;
 
 public class ConfiguraConexionSybase {
 
-    private final static Logger log = Logger.getLogger(ConfiguraConexionSybase.class);
+    private final static Log log = LogFactory.getLog(ConfiguraConexionSybase.class);
 
     public Connection getCnnUnica(String ip, String suc) {
         
