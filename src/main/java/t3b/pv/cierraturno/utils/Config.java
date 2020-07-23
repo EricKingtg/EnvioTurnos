@@ -1,5 +1,6 @@
 /**
  *
+
  * Clase Java desarrollada por: Eric Bernardo Marin Morales
  * Cualquier error sobre esta favor de mandar correo a: emm@tiendas3b.com
  * Para:  Tiendas 3B MX
@@ -8,95 +9,99 @@
  */
 package t3b.pv.cierraturno.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-import org.apache.log4j.Logger;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
+
+@Component("configuracion")
+@ConfigurationProperties(ignoreInvalidFields = false, prefix = "prop.bd.t3b")
 public class Config {
 
-    private final static Logger log = Logger.getLogger(Config.class);
+	private String host;
+    private String port;
+    private String pass;
+    private String user;
+    private String name;
+    private String jdni;
+    private String surl;
+    private String driv;
 
-    public static String rutaBase = System.getProperty("user.dir") + File.separator;
-    public static String rutaConf = rutaBase + "config" + File.separator;
-    public static String archivoprops = "CierraTurno.properties";
+    private String portSB;
+    private String userSB;
+    private String surlSB;
+    private String drivSB;
+    
+	public String getPort() {
+		return port;
+	}
+	public void setPort(String port) {
+		this.port = port;
+	}
+	public String getUser() {
+		return user;
+	}
+	public void setUser(String user) {
+		this.user = user;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getJdni() {
+		return jdni;
+	}
+	public void setJdni(String jdni) {
+		this.jdni = jdni;
+	}
+	public String getSurl() {
+		return surl;
+	}
+	public void setSurl(String surl) {
+		this.surl = surl;
+	}
+	public String getDriv() {
+		return driv;
+	}
+	public void setDriv(String driv) {
+		this.driv = driv;
+	}
+	public String getPortSB() {
+		return portSB;
+	}
+	public void setPortSB(String portSB) {
+		this.portSB = portSB;
+	}
+	public String getUserSB() {
+		return userSB;
+	}
+	public void setUserSB(String userSB) {
+		this.userSB = userSB;
+	}
+	public String getSurlSB() {
+		return surlSB;
+	}
+	public void setSurlSB(String surlSB) {
+		this.surlSB = surlSB;
+	}
+	public String getDrivSB() {
+		return drivSB;
+	}
+	public void setDrivSB(String drivSB) {
+		this.drivSB = drivSB;
+	}
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
+	}
+	public String getPass() {
+		return pass;
+	}
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
 
-    public static String host = "";
-    public static String port = "";
-    public static String user = "";
-    public static String pass = "";
-    public static String name = "";
-    public static String jdni = "";
-    public static String surl = "";
-    public static String driv = "";
-    public static boolean estaCargadaMysql = false;
-
-    public static String hostSB = "";
-    public static String portSB = "";
-    public static String userSB = "";
-    public static String passSB = "";
-    public static String nameSB = "";
-    public static String jdniSB = "";
-    public static String surlSB = "";
-    public static String drivSB = "";
-    public static boolean estaCargadaSB = false;
-
-    public static void cargaConfigMysql() {
-        estaCargadaMysql = false;
-        try {
-
-            log.info("Ruta Base: " + rutaConf + archivoprops);
-            File arch = new File(rutaConf + archivoprops);
-            if (arch.exists()) {
-                Properties props = new Properties();
-                props.load(new FileInputStream(rutaConf + archivoprops));
-
-                host = props.getProperty("host");
-                port = props.getProperty("port");
-//                user = props.getProperty("user");
-//                pass = props.getProperty("pass");
-                user = "usuariopos";
-                pass = "usuariopos1234";
-                name = props.getProperty("name");
-                jdni = props.getProperty("jdni");
-                surl = props.getProperty("surl");
-                driv = props.getProperty("driv");
-
-                estaCargadaMysql = true;
-            }
-
-        } catch (IOException ex) {
-            log.info("Excepcion al cargar la configuracion: " + ex.toString());
-            estaCargadaMysql = false;
-        }
-    }
-
-    public static void cargaConfigSybase(String host, String suc) {
-        estaCargadaSB = false;
-        try {
-
-            log.info("Ruta Base: " + rutaConf + archivoprops);
-            File arch = new File(rutaConf + archivoprops);
-            if (arch.exists()) {
-                Properties props = new Properties();
-                props.load(new FileInputStream(rutaConf + archivoprops));
-
-                hostSB = props.getProperty("hostSB");
-                if (hostSB.equals("##")) {
-                    hostSB = host;
-                }
-                portSB = props.getProperty("portSB");
-                userSB = props.getProperty("userSB");
-
-                nameSB = "suc" + suc;
-                surlSB = props.getProperty("surlSB");
-                drivSB = props.getProperty("drivSB");
-                estaCargadaSB = true;
-            }
-        } catch (IOException ex) {
-            log.info("Excepcion al cargar la configuracion: " + ex.toString());
-            estaCargadaSB = false;
-        }
-    }
 }

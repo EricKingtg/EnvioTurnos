@@ -11,9 +11,13 @@ package t3b.pv.cierraturno.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.springframework.stereotype.Component;
+
+
+@Component("utilities")
 public class Utilities {
 
-    public static String executeCommand(String command) {
+    public String executeCommand(String command) {
         StringBuilder sb = new StringBuilder();
         String s = "";
         Process p;
