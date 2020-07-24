@@ -12,7 +12,9 @@ import dnn.nominae.modulobdconexion.db.Consulta;
 import dnn.nominae.modulobdconexion.dto.QryRespDTO;
 import java.sql.Connection;
 import java.util.ArrayList;
-import org.apache.log4j.Logger;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import t3b.pv.cierraturno.dto.CierraTurnoDto;
@@ -49,7 +51,7 @@ import t3b.pv.cierraturno.dto.VentasArticulosDto;
 @Service("consultasSybase")
 public class ConsultasSybaseImpl implements ConsultasSybase {
 
-	private final static Logger log = Logger.getLogger(ConsultasSybaseImpl.class);
+	private static final Log log = LogFactory.getLog(ConsultasSybaseImpl.class);
 
 	Connection conn = null;
 

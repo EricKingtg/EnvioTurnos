@@ -11,7 +11,9 @@ package t3b.pv.cierraturno.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -55,7 +57,7 @@ import t3b.pv.cierraturno.utils.Utilities;
 @Service("datosServiceImpl")
 public class DatosServiceImpl implements DatosService {
 
-	private final static Logger log = Logger.getLogger(DatosServiceImpl.class);
+	private static final Log LOG = LogFactory.getLog(DatosServiceImpl.class);
 	private List<TiendaDto> lista = null;
 
 	@Autowired
@@ -67,7 +69,7 @@ public class DatosServiceImpl implements DatosService {
 	private ConfiguraConexionSybase conection;
 
 	@Autowired
-	@Qualifier("consultasMySql")
+	@Qualifier("consultasSybase")
 	private ConsultasSybase inserts;
 
 	@Autowired
@@ -81,63 +83,63 @@ public class DatosServiceImpl implements DatosService {
 	private String clave;
 	private String caja;
 
-	public DatosServiceImpl() {
+	public void init() {
 
-		log.info("****************************************");
-		log.info("*   Desarrollo Hecho Para Tiendas 3B   *");
-		log.info("*     JAR Impacta Cierre Turno BOT     *");
-		log.info("****************************************");
+		LOG.info("****************************************");
+		LOG.info("*   Desarrollo Hecho Para Tiendas 3B   *");
+		LOG.info("*     JAR Impacta Cierre Turno BOT     *");
+		LOG.info("****************************************");
 
 		lista = new ArrayList<TiendaDto>();
 		
 		consultas.setConexion(conection.getCnnUnicaMysql());
 
-		log.info("Comienza Proceso paso 1: Obtener Numero de tienda");
+		LOG.info("Comienza Proceso paso 1: Obtener Numero de tienda");
 		lista = consultas.getNumTienda();
 
 		clave = lista.get(0).getTclave();
 
-		log.info("Proceso paso 2 --> Obtener la ip con base al numero de tienda : " + clave);
+		LOG.info("Proceso paso 2 --> Obtener la ip con base al numero de tienda : " + clave);
 		String ipBO = utilidades.obtieneIp(clave);
 
 		caja = utilities.executeCommand("caja");
-		log.info("Obtenemos la caja: " + caja);
+		LOG.info("Obtenemos la caja: " + caja);
 
 		inserts.setConexion(conection.getCnnUnica(ipBO, lista.get(0).getTclave()));
 	}
 
 	public List<TurnoDto> consultaTurnosNoEnviadosExt() {
 		List<TurnoDto> lista = null;
-		log.info("Proceso paso 5: Envio Automatico");
-		log.info("Proceso paso 4: Se obtiene informacion del turno, es un envio automatico");
+		LOG.info("Proceso paso 5: Envio Automatico");
+		LOG.info("Proceso paso 4: Se obtiene informacion del turno, es un envio automatico");
 		lista = consultas.consultaTurnos();
 		return lista;
 	}
 
 	public void proceso(int idTurno, int bandera) {
 
-		log.info("Proceso paso 3: Procesar la info del turno: " + idTurno);
+		LOG.info("Proceso paso 3: Procesar la info del turno: " + idTurno);
 
 		DatosServiceImpl process = new DatosServiceImpl();
 		switch (bandera) {
 		case 0:
-			log.info("La bandera es 0, se esta cerrando un turno");
+			LOG.info("La bandera es 0, se esta cerrando un turno");
 			process.procesoCierraTurnoBOT(idTurno);
 			break;
 		case 1:
-			log.info("La bandera es 1, se esta iniciando un turno");
+			LOG.info("La bandera es 1, se esta iniciando un turno");
 			process.iniciaTurnoBOT();
 			break;
 		case 2:
-			log.info("La bandera es 2, se esta cerrando un turno");
+			LOG.info("La bandera es 2, se esta cerrando un turno");
 			process.procesoCierraTurnoBOT(idTurno);
 			break;
 		case 3:
-			log.info("La bandera es 3, se esta borrando informacion del turno");
+			LOG.info("La bandera es 3, se esta borrando informacion del turno");
 			process.borraInfoTurno(idTurno);
 			break;
 		case 4:
-			log.info("La bandera es 4, consulta turnos");
+			LOG.info("La bandera es 4, consulta turnos");
 			process.consultaTurnosNoEnviados();
 			break;
 
@@ -148,7 +150,7 @@ public class DatosServiceImpl implements DatosService {
 
 	public void consultaTurnosNoEnviados() {
 
-		log.info("Proceso paso 4: Se obtiene informacion del turno, es un envio automatico");
+		LOG.info("Proceso paso 4: Se obtiene informacion del turno, es un envio automatico");
 		List<TurnoDto> listaOP = consultas.consultaTurnos();
 
 		if (!listaOP.isEmpty()) {
@@ -162,47 +164,47 @@ public class DatosServiceImpl implements DatosService {
 	}
 
 	public void iniciaTurnoBOT() {
-		log.info("Proceso paso 4: Se obtiene informacion del turno, es una apertura de turno");
+		LOG.info("Proceso paso 4: Se obtiene informacion del turno, es una apertura de turno");
 		List<TurnoDto> listaOP = consultas.getInfoTurnoOpenBot();
 		if (!listaOP.isEmpty()) {
 			for (TurnoDto dto : listaOP) {
-				log.info("Proceso paso 5: ya se tiene la informacion del turno se procede a insertarlo, turno: "
+				LOG.info("Proceso paso 5: ya se tiene la informacion del turno se procede a insertarlo, turno: "
 						+ dto.getIdturno());
 				inserts.insertaInfoTurno(dto);
 			}
 		}
-		log.info("Se termina el proceso correctamente!!");
+		LOG.info("Se termina el proceso correctamente!!");
 		System.out.println("1");
 	}
 
 	public void borraInfoTurno(int idTurno) {
 
-		log.info("Validando si el turno esta cerrado");
+		LOG.info("Validando si el turno esta cerrado");
 		List<DtoTurnoActivo> listaActivo = consultas.validaTurnoActivo(idTurno);
 
 		if (listaActivo.get(0).getActivo() == 0) {
 
-			log.info("Proceso paso 4: Se obtiene informacion del turno, es un borrado de informacion");
+			LOG.info("Proceso paso 4: Se obtiene informacion del turno, es un borrado de informacion");
 			List<TurnoDto> listaOP = consultas.getInfoTurno(idTurno);
 
-			log.info("Proceso paso 5: Tenemos la informacion del turno, actualizamos del lado del PV");
+			LOG.info("Proceso paso 5: Tenemos la informacion del turno, actualizamos del lado del PV");
 			consultas.actualizaInfoTurnoReenvio(idTurno);
 
-			log.info("Proceso paso 6: Borramos la informacion del turno en el BOT");
+			LOG.info("Proceso paso 6: Borramos la informacion del turno en el BOT");
 			inserts.borraInfoTurno(listaOP.get(0));
 
-			log.info("Proceso paso 7: Calculamos nuevamente la informacion de estadisticas");
+			LOG.info("Proceso paso 7: Calculamos nuevamente la informacion de estadisticas");
 			consultas.reestructuraTurno(idTurno, caja, clave, listaOP.get(0).getUseridcierre());
 
 		} else {
-			log.info("Como el proceso no se a completado solo se hace el proceso de cerrar el turno");
-			log.info("Proceso paso 7: Calculamos nuevamente la informacion de estadisticas");
+			LOG.info("Como el proceso no se a completado solo se hace el proceso de cerrar el turno");
+			LOG.info("Proceso paso 7: Calculamos nuevamente la informacion de estadisticas");
 			consultas.reestructuraTurno(idTurno, caja, clave, listaActivo.get(0).getUseridabre());
 		}
-		// log.info("Proceso paso 8: Calculamos nuevamente la informacion de arqueo del
+		// LOG.info("Proceso paso 8: Calculamos nuevamente la informacion de arqueo del
 		// cierre del turno");
 		// consultas.recalculoInfoTurnoArqueo(idTurno, clave, caja);
-		log.info("Se termina el proceso correctamente!!");
+		LOG.info("Se termina el proceso correctamente!!");
 		System.out.println("1");
 	}
 
@@ -236,12 +238,12 @@ public class DatosServiceImpl implements DatosService {
 		List<TrnTxDetDto> listaTrnTxDet = new ArrayList<TrnTxDetDto>();
 		List<ArqueoCierraTurnoDto> listaArqueoTurno = new ArrayList<ArqueoCierraTurnoDto>();
 
-		log.info("Proceso paso 4: Obtenemos la informacion principal del turno");
+		LOG.info("Proceso paso 4: Obtenemos la informacion principal del turno");
 		listaTurno = consultas.getInfoTurno(idTurno);
 
 		String fecha = listaTurno.get(0).getFecha();
 
-		log.info("Proceso paso 5: Obtener la informacion de las tablas principales");
+		LOG.info("Proceso paso 5: Obtener la informacion de las tablas principales");
 		listaInfoTurno = consultas.getInfoCierraTurno(idTurno);
 		listaInfoKardex = consultas.getInfoCierraTurnoKardex(idTurno);
 		listaCancelaciones = consultas.getInfoCancelaciones(idTurno);
@@ -251,19 +253,19 @@ public class DatosServiceImpl implements DatosService {
 		listDev = consultas.getInfoDevoluciones(idTurno);
 		listaVentas = consultas.getInfoIngresoVtas(clave, caja, fecha, idTurno);
 
-		log.info("Proceso paso 6: Obtenemos la informacion de las tablas de log");
+		LOG.info("Proceso paso 6: Obtenemos la informacion de las tablas de log");
 		lista10trans = consultas.getInfoLog10Trans(clave, caja, fecha, idTurno);
 		listaLogRega = consultas.getInfoLogTregalo(clave, caja, fecha, idTurno);
 		listaLogTran = consultas.getInfoLogTrans(clave, caja, fecha, idTurno);
 		listaEvaleLog = consultas.getInfoEvaleLog(clave, caja, fecha, idTurno);
 
-		log.info("Proceso paso 7: Obtenemos la informacion de las tablas de Error y de tarjetas");
+		LOG.info("Proceso paso 7: Obtenemos la informacion de las tablas de Error y de tarjetas");
 		listErrSumm = consultas.getInfoInetErrorSummary(clave, caja, fecha, idTurno);
 		listInitErr = consultas.getInfoInetError(clave, caja, fecha, idTurno);
 		listMovEvale = consultas.getInfoMovsEvale(clave, caja, fecha, idTurno);
 		listaMovRega = consultas.getInfoMovTRegalo(clave, caja, fecha, idTurno);
 
-		log.info("Proceso paso 8: Obtenemos la informacion de las tablas de calculo de datos");
+		LOG.info("Proceso paso 8: Obtenemos la informacion de las tablas de calculo de datos");
 		listPagoVenta = consultas.getInfoPagosVenta(clave, caja, fecha, idTurno);
 		listMovRetiro = consultas.getInfoMovsRetiro(clave, caja, fecha, idTurno);
 		listTckError = consultas.getInfoTcksError(clave, caja, fecha, idTurno);// no
@@ -272,14 +274,14 @@ public class DatosServiceImpl implements DatosService {
 		listVtasArti = consultas.getInfoVtasArti(clave, caja, fecha, idTurno);
 		listaArqueoTurno = consultas.getInfoArqueoCierraTurno(idTurno);
 
-		log.info("Proceso paso 9: Obtenemos la informacion de las tablas de Movimientos electronicos y la suma total");
+		LOG.info("Proceso paso 9: Obtenemos la informacion de las tablas de Movimientos electronicos y la suma total");
 		listMovElectro = consultas.getInfoMtosElctro(clave, caja, fecha, idTurno);
 		listaHoraTipo = consultas.getInfoHoraTipo(clave, idTurno, fecha);
 		listaTrnTxDet = consultas.getInfoTrnTxDet(clave, caja, fecha, idTurno);
 
 		// trn_tx_det
 		if (!listaTrnTxDet.isEmpty()) {
-			log.info("Insertando en SYBASE la informacion de TRNTXDET.");
+			LOG.info("Insertando en SYBASE la informacion de TRNTXDET.");
 			for (TrnTxDetDto sal : listaTrnTxDet) {
 				inserts.insertaInfoTrnTxDet(sal);
 			}
@@ -287,7 +289,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_thora_tipo
 		if (!listaHoraTipo.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Movimiento Hora Tipo.");
+			LOG.info("Insertamos en Sybase la info de Movimiento Hora Tipo.");
 			for (HoraTipoDto dto : listaHoraTipo) {
 				inserts.insertaInfoHoraTipo(dto);
 			}
@@ -295,7 +297,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_telectro
 		if (!listMovElectro.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Movimiento Electronico.");
+			LOG.info("Insertamos en Sybase la info de Movimiento Electronico.");
 			for (MvtosElectroDto dto : listMovElectro) {
 				inserts.insertaInfoMtosElectro(dto);
 			}
@@ -303,7 +305,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_TVtasArti
 		if (!listVtasArti.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Ventas Articulo.");
+			LOG.info("Insertamos en Sybase la info de Ventas Articulo.");
 			for (VentasArticulosDto dto : listVtasArti) {
 				inserts.insertaInfoVtasArti(dto);
 			}
@@ -311,7 +313,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_infoarqueoturno
 		if (!listaArqueoTurno.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Ventas Articulo.");
+			LOG.info("Insertamos en Sybase la info de Ventas Articulo.");
 			for (ArqueoCierraTurnoDto dto : listaArqueoTurno) {
 				inserts.insertaInfoArqueoCierraTurno(dto);
 			}
@@ -319,7 +321,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_THoras
 		if (!listMovDet.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Movimiento Detalle.");
+			LOG.info("Insertamos en Sybase la info de Movimiento Detalle.");
 			for (MovDetDto dto : listMovDet) {
 				inserts.insertaInfoMovDet(dto);
 			}
@@ -327,7 +329,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_TVtasVend
 		if (!listMovEnc.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Movimiento Encabezado.");
+			LOG.info("Insertamos en Sybase la info de Movimiento Encabezado.");
 			for (MovEncDto dto : listMovEnc) {
 				inserts.insertaInfoMovEnc(dto);
 			}
@@ -335,7 +337,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_tickets_error
 		if (!listTckError.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Error de Tickets.");
+			LOG.info("Insertamos en Sybase la info de Error de Tickets.");
 			for (TpvTicketError dto : listTckError) {
 				inserts.insertaInfoTcksError(dto);
 			}
@@ -343,7 +345,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_movimientos_retiros
 		if (!listMovRetiro.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Movimientos retiros.");
+			LOG.info("Insertamos en Sybase la info de Movimientos retiros.");
 			for (MovimientosRetirosDto dto : listMovRetiro) {
 				inserts.insertaInfoMovsRetiro(dto);
 			}
@@ -351,7 +353,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_fpagos_ventas
 		if (!listPagoVenta.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Pago venta.");
+			LOG.info("Insertamos en Sybase la info de Pago venta.");
 			for (PagosVentasDto dto : listPagoVenta) {
 				inserts.insertaInfoPagosVenta(dto);
 			}
@@ -359,7 +361,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_movimientos_tregalo
 		if (!listaMovRega.isEmpty()) {
-			log.info("Insertando la informacion del Log10Trans");
+			LOG.info("Insertando la informacion del Log10Trans");
 			for (MovTregaloDto dto : listaMovRega) {
 				inserts.insertaInfoMovRegalo(dto);
 			}
@@ -367,7 +369,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_movimientos_evale
 		if (!listMovEvale.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Movimientos de Vales.");
+			LOG.info("Insertamos en Sybase la info de Movimientos de Vales.");
 			for (MovimientosEvaleDto dto : listMovEvale) {
 				inserts.insertaInfoMovsEvale(dto);
 			}
@@ -375,7 +377,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_inet_error
 		if (!listInitErr.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Logs Internet.");
+			LOG.info("Insertamos en Sybase la info de Logs Internet.");
 			for (InternetErrorDto dto : listInitErr) {
 				inserts.insertaInfoInetError(dto);
 			}
@@ -383,7 +385,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_inet_error_summary
 		if (!listErrSumm.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Log Internet Summary.");
+			LOG.info("Insertamos en Sybase la info de Log Internet Summary.");
 			for (InetErrorSummary dto : listErrSumm) {
 				inserts.insertaInfoInetErrorSummary(dto);
 			}
@@ -391,7 +393,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tevale_log
 		if (!listaEvaleLog.isEmpty()) {
-			log.info("Insertamos en Sybase la info de Logs de Vales.");
+			LOG.info("Insertamos en Sybase la info de Logs de Vales.");
 			for (EValeLogDto dto : listaEvaleLog) {
 				inserts.insertaInfoEvaleLog(dto);
 			}
@@ -399,7 +401,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_log_pt_trans
 		if (!listaLogTran.isEmpty()) {
-			log.info("Insertando en Sybase la informacion del LogTrans");
+			LOG.info("Insertando en Sybase la informacion del LogTrans");
 			for (LogPtTransDto dto : listaLogTran) {
 				inserts.insertaInfoLogTrans(dto);
 			}
@@ -407,7 +409,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_ttregalo_log
 		if (!listaLogRega.isEmpty()) {
-			log.info("Insertando en Sybase la informacion del LogRegalo");
+			LOG.info("Insertando en Sybase la informacion del LogRegalo");
 			for (LogTregaloDTo dto : listaLogRega) {
 				inserts.insertaInfoLogRega(dto);
 			}
@@ -415,7 +417,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tpv_log_10s_trans
 		if (!lista10trans.isEmpty()) {
-			log.info("Insertando en Sybase la informacion del Log10Trans");
+			LOG.info("Insertando en Sybase la informacion del Log10Trans");
 			for (Log10TransDto dto : lista10trans) {
 				inserts.insertaInfoLog10Trans(dto);
 			}
@@ -423,7 +425,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// trn_tbot_ctrlingreso_ventas
 		if (!listaVentas.isEmpty()) {
-			log.info("Insertamos en Sybase la info de las ventas.");
+			LOG.info("Insertamos en Sybase la info de las ventas.");
 			for (IngresoVentasDto dto : listaVentas) {
 				inserts.insertaInfoIngresoVtas(dto);
 			}
@@ -431,7 +433,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_dc
 		if (!listDev.isEmpty()) {
-			log.info("Insertando en Sybase la info de las Devoluciones");
+			LOG.info("Insertando en Sybase la info de las Devoluciones");
 			for (DevolucionesDto dev : listDev) {
 				if (inserts.insertaInfoDevolucion(dev)) {
 					consultas.actualizaInfoDevoluciones(idTurno, dev.getIddevolucion());
@@ -441,7 +443,7 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_dcc
 		if (!listDevEnc.isEmpty()) {
-			log.info("Insertando en Sybase la info de devoluciones Encabezado");
+			LOG.info("Insertando en Sybase la info de devoluciones Encabezado");
 			for (DevolucionesEncabezado dev : listDevEnc) {
 				if (inserts.insertaInfoDevolEnc(dev)) {
 					consultas.actualizaInfoDevEnc(idTurno, dev.getFolio());
@@ -451,10 +453,10 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_estadisticas
 		if (!listaEstadisticas.isEmpty()) {
-			log.info("Insertando en Sybase la info de las Estadisticas.");
+			LOG.info("Insertando en Sybase la info de las Estadisticas.");
 			for (EstadisticasDto dto : listaEstadisticas) {
 				if (inserts.insertaInfoEstadisticas(dto)) {
-					log.info("Paso 11: Si se inserta en Sybase se actualiza en MySql");
+					LOG.info("Paso 11: Si se inserta en Sybase se actualiza en MySql");
 					consultas.actualizaEstadisticas(idTurno);
 				}
 			}
@@ -462,10 +464,10 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_cancelaciones
 		if (!listCanEnc.isEmpty()) {
-			log.info("Insertando en Sybase la info de cancelaciones Encabezado");
+			LOG.info("Insertando en Sybase la info de cancelaciones Encabezado");
 			for (CancelacionesEncDto dto : listCanEnc) {
 				if (inserts.insertaInfoCancelacionesEnc(dto)) {
-					log.info("ya insertamos las cancelaciones ENC");
+					LOG.info("ya insertamos las cancelaciones ENC");
 					consultas.actualizaCancelacionesEnc(idTurno);
 				}
 			}
@@ -473,10 +475,10 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_cancelaciones_summary
 		if (!listaCancelaciones.isEmpty()) {
-			log.info("Insertando en Sybase la info de las cancelaciones.");
+			LOG.info("Insertando en Sybase la info de las cancelaciones.");
 			for (CancelacionesDto dto : listaCancelaciones) {
 				if (inserts.insertaInfoCancelaciones(dto)) {
-					log.info("Paso 9: Si se inserta en Sybase se actualiza en MySql");
+					LOG.info("Paso 9: Si se inserta en Sybase se actualiza en MySql");
 					consultas.actualizaCancelaciones(idTurno);
 				}
 			}
@@ -484,10 +486,10 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_turno_kardex
 		if (!listaInfoKardex.isEmpty()) {
-			log.info("Insertando en Sybase la info del Kardex.");
+			LOG.info("Insertando en Sybase la info del Kardex.");
 			for (CierraTurnoKardex dto : listaInfoKardex) {
 				if (inserts.insertaInfoKardex(dto)) {
-					log.info("Paso 7: Si se inserta en Sybase Se actualiza en MySql");
+					LOG.info("Paso 7: Si se inserta en Sybase Se actualiza en MySql");
 					consultas.actualizaKardex(dto.getIdturno());
 				}
 			}
@@ -495,10 +497,10 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_turno_fp
 		if (!listaInfoTurno.isEmpty()) {
-			log.info("Insertando en Sybase la info de las formas de pago.");
+			LOG.info("Insertando en Sybase la info de las formas de pago.");
 			for (CierraTurnoDto dto : listaInfoTurno) {
 				if (inserts.insertaInfoCierraTurno(dto)) {
-					log.info("Paso 5: Si se inserta en Sybase Se actualiza en MySql");
+					LOG.info("Paso 5: Si se inserta en Sybase Se actualiza en MySql");
 					consultas.actualizaTurno(dto.getIdturno());
 				}
 			}
@@ -506,16 +508,16 @@ public class DatosServiceImpl implements DatosService {
 
 		// pv_turnos
 		if (!listaTurno.isEmpty()) {
-			log.info("Insertando en Sybase la info de los turnos.");
+			LOG.info("Insertando en Sybase la info de los turnos.");
 			for (TurnoDto dto : listaTurno) {
 				if (inserts.insertaInfoTurno(dto)) {
-					log.info("Paso 13: Se inserto la informacion del turno " + idTurno);
+					LOG.info("Paso 13: Se inserto la informacion del turno " + idTurno);
 					consultas.actualizaStatusTurno(idTurno);
 				}
 			}
 		}
 
-		log.info("Se termina el proceso correctamente!!");
+		LOG.info("Se termina el proceso correctamente!!");
 		System.out.println("1");
 	}
 

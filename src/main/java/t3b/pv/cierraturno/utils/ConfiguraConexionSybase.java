@@ -23,7 +23,7 @@ import dnn.nominae.modulobdconexion.db.utils.Conexion;
 @Component("configuraConexionSybase")
 public class ConfiguraConexionSybase {
 
-	private final static Log log = LogFactory.getLog(ConfiguraConexionSybase.class);
+	private static final Log LOG = LogFactory.getLog(ConfiguraConexionSybase.class);
 
 	@Autowired
 	@Qualifier("configuracion")
@@ -37,13 +37,13 @@ public class ConfiguraConexionSybase {
 		int month = cal.get(Calendar.MONTH);
 		month = month + 1;
 
-		log.info("Mes: " + month);
+		LOG.info("Mes: " + month);
 		String pass = generaPassMysql(month);
 		cnn.creaConexion(configuracion.getHost(), configuracion.getUser(), pass, configuracion.getPort(),
 				configuracion.getName(), configuracion.getDriv(), configuracion.getSurl());
-		log.info("IP: " + configuracion.getHost());
+		LOG.info("IP: " + configuracion.getHost());
 		Connection conn = cnn.getConexion();
-		log.info("Opcion 1, mes normal: " + pass);
+		LOG.info("Opcion 1, mes normal: " + pass);
 		if (conn != null) {
 
 			return conn;
@@ -52,7 +52,7 @@ public class ConfiguraConexionSybase {
 		cnn.creaConexion(configuracion.getHost(), configuracion.getUser(), pass, configuracion.getPort(),
 				configuracion.getName(), configuracion.getDriv(), configuracion.getSurl());
 		conn = cnn.getConexion();
-		log.info("Opcion 2, mes -1:  " + pass);
+		LOG.info("Opcion 2, mes -1:  " + pass);
 		if (conn != null) {
 			return conn;
 		}
@@ -60,7 +60,7 @@ public class ConfiguraConexionSybase {
 		cnn.creaConexion(configuracion.getHost(), configuracion.getUser(), pass, configuracion.getPort(),
 				configuracion.getName(), configuracion.getDriv(), configuracion.getSurl());
 		conn = cnn.getConexion();
-		log.info("Opcion 3, pass +1:  " + pass);
+		LOG.info("Opcion 3, pass +1:  " + pass);
 		if (conn != null) {
 			return conn;
 		}
@@ -68,20 +68,20 @@ public class ConfiguraConexionSybase {
 		cnn.creaConexion(configuracion.getHost(), configuracion.getUser(), pass, configuracion.getPort(),
 				configuracion.getName(), configuracion.getDriv(), configuracion.getSurl());
 		conn = cnn.getConexion();
-		log.info("Opcion 4, pass generica:  " + pass);
+		LOG.info("Opcion 4, pass generica:  " + pass);
 		if (conn != null) {
 			return conn;
 		}
 
-		log.info("Opcion 4, no hubo conexion");
-		log.info("No se consigio una conexion a la BD");
+		LOG.info("Opcion 4, no hubo conexion");
+		LOG.info("No se consigio una conexion a la BD");
 		System.exit(0);
 		return null;
 	}
 
 	public Connection getCnnUnica(String ip, String suc) {
 
-		log.info("Obteniendo Conexion a BOT: " + ip);
+		LOG.info("Obteniendo Conexion a BOT: " + ip);
 
 		Conexion con = new Conexion();
 		Date date = new Date();
@@ -90,13 +90,13 @@ public class ConfiguraConexionSybase {
 		int month = cal.get(Calendar.MONTH);
 		month = month + 1;
 
-		log.info("Mes: " + month);
+		LOG.info("Mes: " + month);
 		String passSB = generaPass(month);
 		con.creaConexion(ip, configuracion.getUserSB(), passSB, configuracion.getPortSB(), "suc" + suc,
 				configuracion.getDrivSB(), configuracion.getSurlSB());
-		log.info("IP: " + ip);
+		LOG.info("IP: " + ip);
 		Connection conn = con.getConexion();
-		log.info("Opcion 1, mes normal: " + passSB);
+		LOG.info("Opcion 1, mes normal: " + passSB);
 		if (conn != null) {
 
 			return conn;
@@ -105,7 +105,7 @@ public class ConfiguraConexionSybase {
 		con.creaConexion(ip, configuracion.getUserSB(), passSB, configuracion.getPortSB(), "suc" + suc,
 				configuracion.getDrivSB(), configuracion.getSurlSB());
 		conn = con.getConexion();
-		log.info("Opcion 2, mes -1:  " + passSB);
+		LOG.info("Opcion 2, mes -1:  " + passSB);
 		if (conn != null) {
 			return conn;
 		}
@@ -113,13 +113,13 @@ public class ConfiguraConexionSybase {
 		con.creaConexion(ip, configuracion.getUserSB(), passSB, configuracion.getPortSB(), "suc" + suc,
 				configuracion.getDrivSB(), configuracion.getSurlSB());
 		conn = con.getConexion();
-		log.info("Opcion 3, pass generica:  " + passSB);
+		LOG.info("Opcion 3, pass generica:  " + passSB);
 		if (conn != null) {
 			return conn;
 		}
 
-		log.info("Opcion 4, no hubo conexion");
-		log.info("No se consigio una conexion a la BD");
+		LOG.info("Opcion 4, no hubo conexion");
+		LOG.info("No se consigio una conexion a la BD");
 		System.exit(0);
 		return null;
 	}

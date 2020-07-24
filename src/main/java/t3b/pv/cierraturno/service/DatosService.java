@@ -6,6 +6,7 @@ import t3b.pv.cierraturno.dto.TurnoDto;
 
 public interface DatosService {
 
+	public abstract void init();
 	public abstract void proceso(int idTurno, int bandera);
 	//////////////////////////
 	abstract List<TurnoDto> consultaTurnosNoEnviadosExt();

@@ -8,14 +8,15 @@
  */
 package t3b.pv.cierraturno.utils;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 
 @Component("utilidades")
 public class Utilidades {
 
-    private final static Logger log = Logger.getLogger(Utilidades.class);
+	private static final Log log = LogFactory.getLog(Utilidades.class);
 
     public String obtieneIp(String tienda) {
 

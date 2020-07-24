@@ -17,7 +17,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import t3b.pv.cierraturno.dto.CierraTurnoDto;
@@ -55,7 +57,7 @@ import t3b.pv.cierraturno.dto.VentasArticulosDto;
 @Service("consultasMySql")
 public class ConsultasMySqlImpl implements ConsultasMySql {
 
-	private final static Logger log = Logger.getLogger(ConsultasMySqlImpl.class);
+	private static final Log log = LogFactory.getLog(ConsultasMySqlImpl.class);
 	private Connection conn = null;
 
 	public void setConexion(Connection mysql) {
