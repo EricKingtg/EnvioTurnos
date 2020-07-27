@@ -58,7 +58,6 @@ import t3b.pv.cierraturno.utils.Utilities;
 public class DatosServiceImpl implements DatosService {
 
 	private static final Log LOG = LogFactory.getLog(DatosServiceImpl.class);
-	private List<TiendaDto> lista = null;
 
 	@Autowired
 	@Qualifier("consultasMySql")
@@ -90,7 +89,7 @@ public class DatosServiceImpl implements DatosService {
 		LOG.info("*     JAR Impacta Cierre Turno BOT     *");
 		LOG.info("****************************************");
 
-		lista = new ArrayList<TiendaDto>();
+		List<TiendaDto> lista = new ArrayList<>();
 		
 		consultas.setConexion(conection.getCnnUnicaMysql());
 
@@ -106,6 +105,9 @@ public class DatosServiceImpl implements DatosService {
 		LOG.info("Obtenemos la caja: " + caja);
 
 		inserts.setConexion(conection.getCnnUnica(ipBO, lista.get(0).getTclave()));
+
+
+		
 	}
 
 	public List<TurnoDto> consultaTurnosNoEnviadosExt() {
@@ -120,27 +122,26 @@ public class DatosServiceImpl implements DatosService {
 
 		LOG.info("Proceso paso 3: Procesar la info del turno: " + idTurno);
 
-		DatosServiceImpl process = new DatosServiceImpl();
 		switch (bandera) {
 		case 0:
 			LOG.info("La bandera es 0, se esta cerrando un turno");
-			process.procesoCierraTurnoBOT(idTurno);
+			procesoCierraTurnoBOT(idTurno);
 			break;
 		case 1:
 			LOG.info("La bandera es 1, se esta iniciando un turno");
-			process.iniciaTurnoBOT();
+			iniciaTurnoBOT();
 			break;
 		case 2:
 			LOG.info("La bandera es 2, se esta cerrando un turno");
-			process.procesoCierraTurnoBOT(idTurno);
+			procesoCierraTurnoBOT(idTurno);
 			break;
 		case 3:
 			LOG.info("La bandera es 3, se esta borrando informacion del turno");
-			process.borraInfoTurno(idTurno);
+			borraInfoTurno(idTurno);
 			break;
 		case 4:
 			LOG.info("La bandera es 4, consulta turnos");
-			process.consultaTurnosNoEnviados();
+			consultaTurnosNoEnviados();
 			break;
 
 		default:
@@ -210,35 +211,39 @@ public class DatosServiceImpl implements DatosService {
 
 	public void procesoCierraTurnoBOT(int idTurno) {
 
-		List<CierraTurnoDto> listaInfoTurno = new ArrayList<CierraTurnoDto>();
-		List<CierraTurnoKardex> listaInfoKardex = new ArrayList<CierraTurnoKardex>();
-		List<CancelacionesDto> listaCancelaciones = new ArrayList<CancelacionesDto>();
-		List<CancelacionesEncDto> listCanEnc = new ArrayList<CancelacionesEncDto>();
-		List<TurnoDto> listaTurno = new ArrayList<TurnoDto>();
-		List<EstadisticasDto> listaEstadisticas = new ArrayList<EstadisticasDto>();
-		List<Log10TransDto> lista10trans = new ArrayList<Log10TransDto>();
-		List<LogTregaloDTo> listaLogRega = new ArrayList<LogTregaloDTo>();
-		List<LogPtTransDto> listaLogTran = new ArrayList<LogPtTransDto>();
-		List<MovTregaloDto> listaMovRega = new ArrayList<MovTregaloDto>();
-		List<IngresoVentasDto> listaVentas = new ArrayList<IngresoVentasDto>();
-		List<EValeLogDto> listaEvaleLog = new ArrayList<EValeLogDto>();
-		List<InetErrorSummary> listErrSumm = new ArrayList<InetErrorSummary>();
-		List<InternetErrorDto> listInitErr = new ArrayList<InternetErrorDto>();
-		List<PagosVentasDto> listPagoVenta = new ArrayList<PagosVentasDto>();
-		List<MovimientosEvaleDto> listMovEvale = new ArrayList<MovimientosEvaleDto>();
-		List<MovimientosRetirosDto> listMovRetiro = new ArrayList<MovimientosRetirosDto>();
-		List<TpvTicketError> listTckError = new ArrayList<TpvTicketError>();
-		List<MovEncDto> listMovEnc = new ArrayList<MovEncDto>();
-		List<MvtosElectroDto> listMovElectro = new ArrayList<MvtosElectroDto>();
-		List<VentasArticulosDto> listVtasArti = new ArrayList<VentasArticulosDto>();
-		List<MovDetDto> listMovDet = new ArrayList<MovDetDto>();
-		List<HoraTipoDto> listaHoraTipo = new ArrayList<HoraTipoDto>();
-		List<DevolucionesEncabezado> listDevEnc = new ArrayList<DevolucionesEncabezado>();
-		List<DevolucionesDto> listDev = new ArrayList<DevolucionesDto>();
-		List<TrnTxDetDto> listaTrnTxDet = new ArrayList<TrnTxDetDto>();
-		List<ArqueoCierraTurnoDto> listaArqueoTurno = new ArrayList<ArqueoCierraTurnoDto>();
+		List<CierraTurnoDto> listaInfoTurno = new ArrayList<>();
+		List<CierraTurnoKardex> listaInfoKardex = new ArrayList<>();
+		List<CancelacionesDto> listaCancelaciones = new ArrayList<>();
+		List<CancelacionesEncDto> listCanEnc = new ArrayList<>();
+		List<TurnoDto> listaTurno = new ArrayList<>();
+		List<EstadisticasDto> listaEstadisticas = new ArrayList<>();
+		List<Log10TransDto> lista10trans = new ArrayList<>();
+		List<LogTregaloDTo> listaLogRega = new ArrayList<>();
+		List<LogPtTransDto> listaLogTran = new ArrayList<>();
+		List<MovTregaloDto> listaMovRega = new ArrayList<>();
+		List<IngresoVentasDto> listaVentas = new ArrayList<>();
+		List<EValeLogDto> listaEvaleLog = new ArrayList<>();
+		List<InetErrorSummary> listErrSumm = new ArrayList<>();
+		List<InternetErrorDto> listInitErr = new ArrayList<>();
+		List<PagosVentasDto> listPagoVenta = new ArrayList<>();
+		List<MovimientosEvaleDto> listMovEvale = new ArrayList<>();
+		List<MovimientosRetirosDto> listMovRetiro = new ArrayList<>();
+		List<TpvTicketError> listTckError = new ArrayList<>();
+		List<MovEncDto> listMovEnc = new ArrayList<>();
+		List<MvtosElectroDto> listMovElectro = new ArrayList<>();
+		List<VentasArticulosDto> listVtasArti = new ArrayList<>();
+		List<MovDetDto> listMovDet = new ArrayList<>();
+		List<HoraTipoDto> listaHoraTipo = new ArrayList<>();
+		List<DevolucionesEncabezado> listDevEnc = new ArrayList<>();
+		List<DevolucionesDto> listDev = new ArrayList<>();
+		List<TrnTxDetDto> listaTrnTxDet = new ArrayList<>();
+		List<ArqueoCierraTurnoDto> listaArqueoTurno = new ArrayList<>();
+		
+		//consultas.setConexion(conection.getCnnUnicaMysql());
 
-		LOG.info("Proceso paso 4: Obtenemos la informacion principal del turno");
+		LOG.info("vERSION 27 JULIO");
+		LOG.info("Proceso paso 4: Obtenemos la informacion principal del turno: " + idTurno);
+		
 		listaTurno = consultas.getInfoTurno(idTurno);
 
 		String fecha = listaTurno.get(0).getFecha();

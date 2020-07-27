@@ -28,14 +28,21 @@ public class ConfiguraConexionSybase {
 	@Autowired
 	@Qualifier("configuracion")
 	private Config configuracion;
+	
+	@Autowired
+	@Qualifier("configIp")
+	private HostSybase configIp;
 
 	public Connection getCnnUnicaMysql() {
+		LOG.info("Creando conexion a BD");
 		Conexion cnn = new Conexion();
 		Date date = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		int month = cal.get(Calendar.MONTH);
 		month = month + 1;
+		
+		LOG.info(configuracion.toString());
 
 		LOG.info("Mes: " + month);
 		String pass = generaPassMysql(month);
@@ -80,6 +87,12 @@ public class ConfiguraConexionSybase {
 	}
 
 	public Connection getCnnUnica(String ip, String suc) {
+		
+		LOG.info("Ip Obtenida del archivo" + configIp.getHostSB());
+		
+		if(!configIp.getHostSB().equals("##")) {
+			ip = configIp.getHostSB();
+		}
 
 		LOG.info("Obteniendo Conexion a BOT: " + ip);
 
@@ -114,6 +127,16 @@ public class ConfiguraConexionSybase {
 				configuracion.getDrivSB(), configuracion.getSurlSB());
 		conn = con.getConexion();
 		LOG.info("Opcion 3, pass generica:  " + passSB);
+		if (conn != null) {
+			return conn;
+		}
+		
+		passSB = "202003y";
+		//cnn.creaConexion(configuracion.getHost(), configuracion.getUser()  , pass  , configuracion.getPort()  ,configuracion.getName(), configuracion.getDriv(), configuracion.getSurl());
+		LOG.info(ip + configuracion.getUserSB() + passSB + configuracion.getPortSB() + "suc215" + configuracion.getDrivSB() + configuracion.getSurlSB());
+		con.creaConexion(               ip        , configuracion.getUserSB(), passSB, configuracion.getPortSB(), "suc215",               configuracion.getDrivSB(), configuracion.getSurlSB());
+		conn = con.getConexion();
+		LOG.info("Opcion 4, pass generica:  " + passSB);
 		if (conn != null) {
 			return conn;
 		}

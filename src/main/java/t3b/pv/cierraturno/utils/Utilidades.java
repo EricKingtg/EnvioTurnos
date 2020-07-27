@@ -55,6 +55,10 @@ public class Utilidades {
                 //No hagas nada
                 break;
         }
+        
+        //Comentar la siguiente linea cuando sea produccion
+        //ip ="192.200.1.238";
+        
         return ip;
     }
 

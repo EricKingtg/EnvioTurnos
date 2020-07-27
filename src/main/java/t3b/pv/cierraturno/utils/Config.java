@@ -31,6 +31,14 @@ public class Config {
     private String surlSB;
     private String drivSB;
     
+    
+    
+	@Override
+	public String toString() {
+		return "Config [host=" + host + ", port=" + port + ", pass=" + pass + ", user=" + user + ", name=" + name
+				+ ", jdni=" + jdni + ", surl=" + surl + ", driv=" + driv + ", portSB=" + portSB + ", userSB=" + userSB
+				+ ", surlSB=" + surlSB + ", drivSB=" + drivSB + "]";
+	}
 	public String getPort() {
 		return port;
 	}

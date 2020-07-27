@@ -8,12 +8,7 @@
  */
 package t3b.pv.cierraturno.dao.impl;
 
-import dnn.nominae.modulobdconexion.db.Consulta;
-import dnn.nominae.modulobdconexion.dto.CampoDTO;
-import dnn.nominae.modulobdconexion.dto.ColumnaDTO;
-import dnn.nominae.modulobdconexion.dto.QryRespDTO;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,14 +17,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import t3b.pv.cierraturno.dto.CierraTurnoDto;
-import t3b.pv.cierraturno.dto.CierraTurnoKardex;
-import t3b.pv.cierraturno.dto.TiendaDto;
-import t3b.pv.cierraturno.dao.ConsultasMySql;
+import dnn.nominae.modulobdconexion.db.Consulta;
+import dnn.nominae.modulobdconexion.dto.CampoDTO;
+import dnn.nominae.modulobdconexion.dto.ColumnaDTO;
+import dnn.nominae.modulobdconexion.dto.QryRespDTO;
+
 import t3b.pv.cierraturno.dao.db.IQryTurnoKardex;
 import t3b.pv.cierraturno.dto.ArqueoCierraTurnoDto;
 import t3b.pv.cierraturno.dto.CancelacionesDto;
 import t3b.pv.cierraturno.dto.CancelacionesEncDto;
+import t3b.pv.cierraturno.dto.CierraTurnoDto;
+import t3b.pv.cierraturno.dto.CierraTurnoKardex;
 import t3b.pv.cierraturno.dto.DevolucionesDto;
 import t3b.pv.cierraturno.dto.DevolucionesEncabezado;
 import t3b.pv.cierraturno.dto.DtoTurnoActivo;
@@ -49,10 +47,13 @@ import t3b.pv.cierraturno.dto.MovimientosEvaleDto;
 import t3b.pv.cierraturno.dto.MovimientosRetirosDto;
 import t3b.pv.cierraturno.dto.MvtosElectroDto;
 import t3b.pv.cierraturno.dto.PagosVentasDto;
+import t3b.pv.cierraturno.dto.TiendaDto;
 import t3b.pv.cierraturno.dto.TpvTicketError;
 import t3b.pv.cierraturno.dto.TrnTxDetDto;
 import t3b.pv.cierraturno.dto.TurnoDto;
 import t3b.pv.cierraturno.dto.VentasArticulosDto;
+import t3b.pv.cierraturno.dao.ConsultasMySql;
+
 
 @Service("consultasMySql")
 public class ConsultasMySqlImpl implements ConsultasMySql {
@@ -1449,12 +1450,6 @@ public class ConsultasMySqlImpl implements ConsultasMySql {
 		} catch (Exception e) {
 			log.info("Error durante la consulta a BD 5: " + e.getMessage());
 			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException ex) {
-				log.info("Error al cerrar conexion: " + ex.toString());
-			}
 		}
 		return movimientoVales;
 	}
@@ -2912,12 +2907,6 @@ public class ConsultasMySqlImpl implements ConsultasMySql {
 		} catch (Exception e) {
 			log.info("Error durante la consulta a BD 5: " + e.getMessage());
 			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException ex) {
-				log.info("Error al cerrar conexion: " + ex.toString());
-			}
 		}
 		return listaTienda;
 	}
