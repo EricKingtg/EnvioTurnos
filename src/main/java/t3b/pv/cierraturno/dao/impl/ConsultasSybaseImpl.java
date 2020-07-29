@@ -42,11 +42,11 @@ import t3b.pv.cierraturno.dto.MovimientosEvaleDto;
 import t3b.pv.cierraturno.dto.MovimientosRetirosDto;
 import t3b.pv.cierraturno.dto.MvtosElectroDto;
 import t3b.pv.cierraturno.dto.PagosVentasDto;
+import t3b.pv.cierraturno.dto.PvLogTarjetaDto;
 import t3b.pv.cierraturno.dto.TpvTicketError;
 import t3b.pv.cierraturno.dto.TrnTxDetDto;
 import t3b.pv.cierraturno.dto.TurnoDto;
 import t3b.pv.cierraturno.dto.VentasArticulosDto;
-
 
 @Service("consultasSybase")
 public class ConsultasSybaseImpl implements ConsultasSybase {
@@ -1260,6 +1260,57 @@ public class ConsultasSybaseImpl implements ConsultasSybase {
 			paramsOut.add(java.sql.Types.VARCHAR);
 			QryRespDTO resp = new Consulta().ejecutaSP(conn, IQryTurnoKardex.INSERTA_INFO_ARQUEOCIERRATURNO, paramsIn,
 					paramsOut);
+			if (resp.getRes() == 1) {
+				out = true;
+				int res = Integer.parseInt(resp.getParamOut().get(0).getValor().toString());
+				String msg = resp.getParamOut().get(1).getValor().toString();
+				log.info("La salida: " + res + " -- " + msg);
+			} else {
+				int res = Integer.parseInt(resp.getParamOut().get(0).getValor().toString());
+				String msg = resp.getParamOut().get(0).getValor().toString();
+				log.info("La salida 2: " + res + " -- " + msg);
+			}
+		} else {
+			log.info("la conexion es nula");
+		}
+
+		return out;
+	}
+
+	@Override
+	public boolean insertaInfoPagoTarjeta(PvLogTarjetaDto in) {
+		boolean out = false;
+		if (conn != null) {
+			ArrayList<Object> paramsIn = new ArrayList<Object>();
+			paramsIn.add(in.getTienda());
+			paramsIn.add(in.getCaja());
+			paramsIn.add(in.getTicket());
+			paramsIn.add(in.getIdLog());
+			paramsIn.add(in.getNegocio());
+			paramsIn.add(in.getDescripcion());
+			paramsIn.add(in.getCode());
+			paramsIn.add(in.getAgente());
+			paramsIn.add(in.getProducto());
+			paramsIn.add(in.getAutoriza());
+			paramsIn.add(in.getFolio());
+			paramsIn.add(in.getBanco());
+			paramsIn.add(in.getAfiliacion());
+			paramsIn.add(in.getTarjeta());
+			paramsIn.add(in.getReferencia());
+			paramsIn.add(in.getFirma());
+			paramsIn.add(in.getMarca());
+			paramsIn.add(in.getMonto());
+			paramsIn.add(in.getFecha());
+			paramsIn.add(in.getPan());
+			paramsIn.add(in.getAid());
+			paramsIn.add(in.getArqc());
+			paramsIn.add(in.getAtmfecha());
+			paramsIn.add(in.getAutenticacion());
+			paramsIn.add(in.getIdturno());
+			ArrayList<Integer> paramsOut = new ArrayList<Integer>();
+			paramsOut.add(java.sql.Types.INTEGER);
+			paramsOut.add(java.sql.Types.VARCHAR);
+			QryRespDTO resp = new Consulta().ejecutaSP(conn, IQryTurnoKardex.INSERTA_INFO_PAGOTARJETA, paramsIn, paramsOut);
 			if (resp.getRes() == 1) {
 				out = true;
 				int res = Integer.parseInt(resp.getParamOut().get(0).getValor().toString());

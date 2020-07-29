@@ -25,13 +25,14 @@ import t3b.pv.cierraturno.dto.MovimientosEvaleDto;
 import t3b.pv.cierraturno.dto.MovimientosRetirosDto;
 import t3b.pv.cierraturno.dto.MvtosElectroDto;
 import t3b.pv.cierraturno.dto.PagosVentasDto;
+import t3b.pv.cierraturno.dto.PvLogTarjetaDto;
 import t3b.pv.cierraturno.dto.TpvTicketError;
 import t3b.pv.cierraturno.dto.TrnTxDetDto;
 import t3b.pv.cierraturno.dto.TurnoDto;
 import t3b.pv.cierraturno.dto.VentasArticulosDto;
 
 public interface ConsultasSybase {
-	
+
 	public void setConexion(Connection sybase);
 
 	public boolean borraInfoTurno(TurnoDto in);
@@ -91,5 +92,7 @@ public interface ConsultasSybase {
 	public boolean insertaInfoEstadisticas(EstadisticasDto in);
 
 	public boolean insertaInfoArqueoCierraTurno(ArqueoCierraTurnoDto in);
+	
+	public boolean insertaInfoPagoTarjeta(PvLogTarjetaDto in);
 
 }

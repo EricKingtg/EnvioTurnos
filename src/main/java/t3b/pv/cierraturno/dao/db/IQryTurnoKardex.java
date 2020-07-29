@@ -39,6 +39,7 @@ public interface IQryTurnoKardex {
     public static String OBTIENE_INFO_DEVOLUC = "{ CALL SP_GETINFODEVOLUCION(?) }";
     public static String OBTIENE_INFO_TURNOOPEN = "{ CALL SP_GETINFOTURNOOPENBOT() }";
     public static String OBTIENE_INFO_ARQUEOCIERRATURNO = "{ CALL S_GETINFOARQUEOCIERRATURNO(?) }";
+    public static String OBTIENE_INFO_PAGOTARJETA = "{ CALL GET_MOVS_TARJETA(?) }";
 
     public static String INSERTA_INFO_CIERRA_KARDEX = "{ CALL SP_INSERTA_INFO_KARDEX(?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
     public static String INSERTA_INFO_CIERRA_TURNO = " { CALL SP_INSERTA_INFO_TURNO(?,?,?,?,?,?,?,?,?) }";
@@ -67,6 +68,7 @@ public interface IQryTurnoKardex {
     public static String INSERTA_INFO_DEV_ENC = "{ CALL SP_INSERTA_PV_DEVOLENC(?,?,?,?,?,?) }";
     public static String INSERTA_INFO_DEVOLUC = "{ CALL SP_INSERTA_PV_DEVOLOCION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
     public static String INSERTA_INFO_ARQUEOCIERRATURNO = "{CALL SP_INSERTA_ARQUEO_CIERRATURNO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+    public static String INSERTA_INFO_PAGOTARJETA = "{CALL SP_INSERTA_MOV_PAGOTARJETA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 
     public static String UPDATE_INFO_TURNO = "{ CALL SP_ACTUALIZA_CIERRA_TURNO(?,?,?) }";
     public static String UPDATE_INFO_KARDEX = "{ CALL SP_ACTUALIZA_CIERRA_KARDEX(?,?,?) }";
@@ -86,5 +88,6 @@ public interface IQryTurnoKardex {
     public static String VALIDA_TURNO_ACTIVO = "{ CALL S_VALIDA_TURNOACTIVO(?) }";
     public static String CONSULTA_TURNOS = "{ CALL S_CONSULTA_TURNOS_TODOS() }";
     public static String CALCULA_ADICIONALES = "{ CALL S_CALCULA_ADICIONALES(?,?,?,?) }";
+
     
 }

@@ -44,6 +44,7 @@ import t3b.pv.cierraturno.dto.MovimientosEvaleDto;
 import t3b.pv.cierraturno.dto.MovimientosRetirosDto;
 import t3b.pv.cierraturno.dto.MvtosElectroDto;
 import t3b.pv.cierraturno.dto.PagosVentasDto;
+import t3b.pv.cierraturno.dto.PvLogTarjetaDto;
 import t3b.pv.cierraturno.dto.TiendaDto;
 import t3b.pv.cierraturno.dto.TpvTicketError;
 import t3b.pv.cierraturno.dto.TrnTxDetDto;
@@ -90,7 +91,7 @@ public class DatosServiceImpl implements DatosService {
 		LOG.info("****************************************");
 
 		List<TiendaDto> lista = new ArrayList<>();
-		
+
 		consultas.setConexion(conection.getCnnUnicaMysql());
 
 		LOG.info("Comienza Proceso paso 1: Obtener Numero de tienda");
@@ -106,8 +107,6 @@ public class DatosServiceImpl implements DatosService {
 
 		inserts.setConexion(conection.getCnnUnica(ipBO, lista.get(0).getTclave()));
 
-
-		
 	}
 
 	public List<TurnoDto> consultaTurnosNoEnviadosExt() {
@@ -238,12 +237,13 @@ public class DatosServiceImpl implements DatosService {
 		List<DevolucionesDto> listDev = new ArrayList<>();
 		List<TrnTxDetDto> listaTrnTxDet = new ArrayList<>();
 		List<ArqueoCierraTurnoDto> listaArqueoTurno = new ArrayList<>();
-		
-		//consultas.setConexion(conection.getCnnUnicaMysql());
+		List<PvLogTarjetaDto> listaPagoTarjeta = new ArrayList<>();
+
+		// consultas.setConexion(conection.getCnnUnicaMysql());
 
 		LOG.info("vERSION 27 JULIO");
 		LOG.info("Proceso paso 4: Obtenemos la informacion principal del turno: " + idTurno);
-		
+
 		listaTurno = consultas.getInfoTurno(idTurno);
 
 		String fecha = listaTurno.get(0).getFecha();
@@ -283,6 +283,7 @@ public class DatosServiceImpl implements DatosService {
 		listMovElectro = consultas.getInfoMtosElctro(clave, caja, fecha, idTurno);
 		listaHoraTipo = consultas.getInfoHoraTipo(clave, idTurno, fecha);
 		listaTrnTxDet = consultas.getInfoTrnTxDet(clave, caja, fecha, idTurno);
+		listaPagoTarjeta = consultas.getInfoPagoTarjeta(idTurno);
 
 		// trn_tx_det
 		if (!listaTrnTxDet.isEmpty()) {
@@ -508,6 +509,14 @@ public class DatosServiceImpl implements DatosService {
 					LOG.info("Paso 5: Si se inserta en Sybase Se actualiza en MySql");
 					consultas.actualizaTurno(dto.getIdturno());
 				}
+			}
+		}
+		// pv_log_pago_tarjeta
+		if (!listaPagoTarjeta.isEmpty()) {
+			LOG.info("Insertando en Sybase la info del cobro con tarjeta.");
+			for (PvLogTarjetaDto dto : listaPagoTarjeta) {
+				inserts.insertaInfoPagoTarjeta(dto);
+
 			}
 		}
 

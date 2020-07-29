@@ -27,6 +27,7 @@ import t3b.pv.cierraturno.dto.MovimientosEvaleDto;
 import t3b.pv.cierraturno.dto.MovimientosRetirosDto;
 import t3b.pv.cierraturno.dto.MvtosElectroDto;
 import t3b.pv.cierraturno.dto.PagosVentasDto;
+import t3b.pv.cierraturno.dto.PvLogTarjetaDto;
 import t3b.pv.cierraturno.dto.TiendaDto;
 import t3b.pv.cierraturno.dto.TpvTicketError;
 import t3b.pv.cierraturno.dto.TrnTxDetDto;
@@ -78,5 +79,6 @@ public interface ConsultasMySql {
 	public abstract List<ArqueoCierraTurnoDto> getInfoArqueoCierraTurno(int idTurno);
 	public abstract boolean reestructuraTurno(int idTurno, String caja, String tclave, int userIdCierre);
 	public abstract List<ArqueoCierraTurnoDto> recalculoInfoTurnoArqueo(int idTurno, String tienda, String caja);
+	public abstract List<PvLogTarjetaDto> getInfoPagoTarjeta(int idturno);
 	
 }

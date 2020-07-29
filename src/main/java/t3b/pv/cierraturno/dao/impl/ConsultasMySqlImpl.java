@@ -47,13 +47,13 @@ import t3b.pv.cierraturno.dto.MovimientosEvaleDto;
 import t3b.pv.cierraturno.dto.MovimientosRetirosDto;
 import t3b.pv.cierraturno.dto.MvtosElectroDto;
 import t3b.pv.cierraturno.dto.PagosVentasDto;
+import t3b.pv.cierraturno.dto.PvLogTarjetaDto;
 import t3b.pv.cierraturno.dto.TiendaDto;
 import t3b.pv.cierraturno.dto.TpvTicketError;
 import t3b.pv.cierraturno.dto.TrnTxDetDto;
 import t3b.pv.cierraturno.dto.TurnoDto;
 import t3b.pv.cierraturno.dto.VentasArticulosDto;
 import t3b.pv.cierraturno.dao.ConsultasMySql;
-
 
 @Service("consultasMySql")
 public class ConsultasMySqlImpl implements ConsultasMySql {
@@ -3479,6 +3479,99 @@ public class ConsultasMySqlImpl implements ConsultasMySql {
 			e.printStackTrace();
 		}
 		return listaArqueo;
+	}
+
+	@Override
+	public List<PvLogTarjetaDto> getInfoPagoTarjeta(int idTurno) {
+		log.info("ConsultasMysql.getInfoPagoTarjeta");
+		QryRespDTO resp = null;
+		List<PvLogTarjetaDto> listaPagoTarjeta = new ArrayList<PvLogTarjetaDto>();
+		try {
+			if (conn != null) {
+				ArrayList<Object> paramsIn = new ArrayList<>();
+				paramsIn.add(idTurno);
+				resp = new Consulta().ejecutaSelectSP(conn, IQryTurnoKardex.OBTIENE_INFO_PAGOTARJETA, paramsIn);
+				if (resp.getRes() == 1) {
+					ArrayList<ColumnaDTO> cols = resp.getColumnas();
+					for (HashMap<String, CampoDTO> fila : resp.getDatosTabla()) {
+						PvLogTarjetaDto dato = new PvLogTarjetaDto();
+						for (ColumnaDTO col : cols) {
+							switch (col.getIdTipo()) {
+							case java.sql.Types.INTEGER:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? "0"
+												: Integer.parseInt(fila.get(col.getEtiqueta()).getValor().toString()
+														.replaceAll(",", "").replaceAll("$", "").replaceAll(" ", "")));
+								break;
+
+							case java.sql.Types.DOUBLE:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? "0"
+												: Double.parseDouble(
+														fila.get(col.getEtiqueta()).getValor().toString()));
+								break;
+
+							case java.sql.Types.FLOAT:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? "0"
+												: Float.parseFloat(fila.get(col.getEtiqueta()).getValor().toString()));
+								break;
+
+							case java.sql.Types.DECIMAL:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? "0"
+												: Float.parseFloat(fila.get(col.getEtiqueta()).getValor().toString()));
+								break;
+
+							case java.sql.Types.NUMERIC:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? "0"
+												: Float.parseFloat(fila.get(col.getEtiqueta()).getValor().toString()));
+								break;
+
+							case java.sql.Types.VARCHAR:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? ""
+												: fila.get(col.getEtiqueta()).getValor().toString());
+								break;
+
+							case java.sql.Types.TINYINT:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? "0"
+												: Integer.parseInt(fila.get(col.getEtiqueta()).getValor().toString()
+														.replaceAll(",", "").replaceAll("$", "").replaceAll(" ", "")));
+								break;
+
+							default:
+								dato.getClass().getField(col.getEtiqueta()).set(dato,
+										fila.get(col.getEtiqueta()).getValor() == null ? ""
+												: fila.get(col.getEtiqueta()).getValor().toString());
+								break;
+							}
+						}
+						// log.info(dato.toString());
+						listaPagoTarjeta.add(dato);
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			log.info("Error durante la consulta a BD 1: " + e.getMessage());
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			log.info("Error durante la consulta a BD 2: " + e.getMessage());
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			log.info("Error durante la consulta a BD 3: " + e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			log.info("Error durante la consulta a BD 4: " + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			log.info("Error durante la consulta a BD 5: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return listaPagoTarjeta;
+
 	}
 
 }
