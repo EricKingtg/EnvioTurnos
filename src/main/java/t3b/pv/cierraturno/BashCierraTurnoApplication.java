@@ -13,13 +13,13 @@ import t3b.pv.cierraturno.service.DatosService;
 
 @SpringBootApplication
 public class BashCierraTurnoApplication implements ApplicationRunner {
-	
+
 	private static final Log LOG = LogFactory.getLog(BashCierraTurnoApplication.class);
 
 	@Autowired
 	@Qualifier("datosServiceImpl")
 	private DatosService datosServiceImpl;
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(BashCierraTurnoApplication.class, args);
 	}
@@ -29,7 +29,7 @@ public class BashCierraTurnoApplication implements ApplicationRunner {
 		
 		String[] arg = args.getSourceArgs();
 		
-		Integer idTurno = Integer.parseInt(arg[0]);
+		Integer idTurno = Integer.parseInt(arg[0]);		
 		Integer bandera = Integer.parseInt(arg[1]);
 		
 		LOG.info("Se comienza la ejecucion para turno: " + idTurno + ", con bandera: " + bandera);
