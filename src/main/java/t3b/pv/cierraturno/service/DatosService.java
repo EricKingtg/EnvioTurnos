@@ -10,15 +10,15 @@ public interface DatosService {
 
 	public abstract void proceso(int idTurno, int bandera);
 
-	abstract List<TurnoDto> consultaTurnosNoEnviadosExt();
+	public abstract List<TurnoDto> consultaTurnosNoEnviadosExt();
 
-	abstract void consultaTurnosNoEnviados();
+	public abstract void consultaTurnosNoEnviados();
 
-	abstract void iniciaTurnoBOT();
+	public abstract void iniciaTurnoBOT();
 
-	abstract void borraInfoTurno(int idTurno);
+	public abstract void borraInfoTurno(int idTurno);
 
-	abstract void procesoCierraTurnoBOT(int idTurno);
+	public abstract void procesoCierraTurnoBOT(int idTurno);
 
 	public String getClave();
 
